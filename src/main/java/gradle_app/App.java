@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,15 +14,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.*;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-public class App {
+class App {
 	public String getGreeting() {
 		return "Hello world.";
 	}
-
-	static List<Information> in = new ArrayList<>();
 
 	private static final EntityManagerFactory emFactoryObj;
 	private static final String PERSISTENCE_UNIT_NAME = "JPAService";
@@ -33,16 +30,8 @@ public class App {
 	}
 
 	// This Method Is Used To Retrieve The 'EntityManager' Object
-	public static EntityManager getEntityManager() {
+	private static EntityManager getEntityManager() {
 		return emFactoryObj.createEntityManager();
-	}
-
-	public static List<Information> getIn() {
-		return in;
-	}
-
-	public static void setIn(List<Information> in) {
-		App.in = in;
 	}
 
 	public static void main(String[] args) {
@@ -61,9 +50,9 @@ public class App {
 			JSONArray infoList = (JSONArray) obj;
 			System.out.println(infoList);
 
-			infoList.forEach(emp -> parseInformationObject((JSONObject) emp));
+			Information i = new Information();
 
-			List<Information> info = getIn();
+			List<Information> info = i.parseInformationObject(infoList);
 
 			saveInformation(info);
 		} catch (FileNotFoundException e) {
@@ -78,7 +67,7 @@ public class App {
 
 	}
 
-	public static void saveInformation(List<Information> inf) {
+	private static void saveInformation(List<Information> inf) {
 		EntityManager entityMgr = getEntityManager();
 		entityMgr.getTransaction().begin();
 		InformationEntity infObj = new InformationEntity();
@@ -127,24 +116,6 @@ public class App {
 
 		entityMgr.clear();
 		System.out.println("Records Successfully Inserted In The Database");
-	}
-
-	private static void parseInformationObject(JSONObject info) {
-
-		String id = info.get("id").toString();
-		String state = info.get("state").toString();
-		String type = null;
-		if (info.get("type") != null) {
-			type = info.get("type").toString();
-		}
-		String host = null;
-		if (info.get("host") != null) {
-			host = info.get("host").toString();
-		}
-		long timestamp = (long) info.get("timestamp");
-
-		in.add(new Information(id, state, type, host, timestamp));
-
 	}
 
 }
