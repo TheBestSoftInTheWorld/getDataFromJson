@@ -1,2 +1,2 @@
 # getDataFromJson
-instruction: https://github.com/TheBestSoftInTheWorld/getDataFromJson/blob/master/getDataFromJsonAndSaveToDatabase.pdf
+Instruction: https://github.com/TheBestSoftInTheWorld/getDataFromJson/wiki
